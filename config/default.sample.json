@@ -1,0 +1,19 @@
+{
+  "wechaty": {
+    "puppetToken": "YOUR_PADLOCAL_TOKEN"
+  },
+  "openAI": {
+    "apiKey": "YOUR_OPENAI_API_KEY",
+    "inputPrice": "0.01",
+    "outputPrice": "0.03",
+    "maxTokens": 4096
+  },
+  "assistant": {
+    "idleTimeSeconds": 600,
+    "messageBatchPeriodDays": 14,
+    "systemPrompt": "Your system prompt here",
+    "groupTopic": "TARGET_GROUP_TOPIC",
+    "imageDimension": 1024
+  },
+  "debug": true
+}

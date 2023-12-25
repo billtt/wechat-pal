@@ -1,0 +1,26 @@
+{
+  "name": "wechat-pal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "WECHATY_PUPPET_SERVICE_AUTHORITY=token-service-discovery-test.juzibot.com WECHATY_PUPPET_SERVICE_NO_TLS_INSECURE_CLIENT=true node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@juzi/wechaty": "^1.0.85",
+    "@juzi/wechaty-puppet-service": "^1.0.88",
+    "config": "^3.3.9",
+    "fs": "^0.0.1-security",
+    "log4js": "^6.9.1",
+    "openai": "^4.24.1",
+    "qrcode-terminal": "^0.12.0",
+    "readline-sync": "^1.4.10",
+    "sharp": "^0.33.1",
+    "wechaty": "^1.20.2",
+    "wechaty-puppet-padlocal": "^1.20.1"
+  }
+}
