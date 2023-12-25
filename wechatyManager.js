@@ -98,6 +98,12 @@ async function triggerOpenAICall() {
     const reply = await openAIManager.sendToOpenAI();
     if (reply && _room) {
         utils.logDebug(`Sending message: ${reply}`);
+
+        // add message to storage here because workpro puppet won't receive message sent by itself
+        if (config.get('wechaty.puppetType') === 'workpro') {
+            messageStorage.addMessage({ bot: true, sender: '', time: new Date(), text: reply });
+        }
+
         _room.say(reply);
     }
 }

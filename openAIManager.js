@@ -16,7 +16,7 @@ async function sendToOpenAI() {
     const usage = response.usage;
     let price = usage.prompt_tokens * config.get('openAI.inputPrice') / 1000
             + usage.completion_tokens * config.get('openAI.outputPrice') / 1000;
-    utils.logDebug(`Usage: ${JSON.stringify(usage)}`);
+    utils.logDebug(`Usage: ${JSON.stringify(usage)} Price: $${price.toFixed(2)}`);
 
     if (response.choices && response.choices.length > 0) {
         let reply = response.choices[0].message.content;
@@ -24,7 +24,6 @@ async function sendToOpenAI() {
             utils.logInfo(`[Internal] ${reply}`);
             return null;
         } else {
-            reply = `$${price.toFixed(2)}\n${reply}`;
             return reply;
         }
     }
@@ -49,7 +48,11 @@ function composeMessages(messages) {
         const prefix = `${timeStr} ${message.sender}: `;
 
         if (message.text) {
-            aiMsg.content = prefix + message.text;
+            if (message.bot) {
+                aiMsg.content = message.text;
+            } else {
+                aiMsg.content = prefix + message.text;
+            }
         } else if (message.image) {
             aiMsg.content = [
                 { type: 'text', text: prefix },
