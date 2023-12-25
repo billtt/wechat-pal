@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "WECHATY_PUPPET_SERVICE_AUTHORITY=token-service-discovery-test.juzibot.com WECHATY_PUPPET_SERVICE_NO_TLS_INSECURE_CLIENT=true node index.js"
+    "workpro": "WECHATY_PUPPET_SERVICE_AUTHORITY=token-service-discovery-test.juzibot.com WECHATY_PUPPET_SERVICE_NO_TLS_INSECURE_CLIENT=true node index.js",
+    "padlocal": "node index.js"
   },
   "keywords": [],
   "author": "",

@@ -1,5 +1,4 @@
 const {PuppetPadlocal} = require("wechaty-puppet-padlocal");
-const {WechatyBuilder} = require("@juzi/wechaty");
 const openAIManager = require('./openAIManager');
 const messageStorage = require('./messageStorage');
 const config = require('config');
@@ -17,9 +16,15 @@ let _room = null;
 let _bot = null;
 
 function init() {
-    // const puppet = new PuppetPadlocal({ token: config.get('wechaty.puppetToken') });
-    // _bot = WechatyBuilder.build({ name: 'WeChatPal', puppet });
-    _bot = WechatyBuilder.build({ name: 'WeChatPal', puppet: '@juzi/wechaty-puppet-service', puppetOptions: {token: config.get('wechaty.puppetToken')} });
+    const isWorkPro = config.get('wechaty.puppetType') === 'workpro';
+    const {WechatyBuilder} = require(isWorkPro ? '@juzi/wechaty' : 'wechaty');
+    const token = config.get('wechaty.puppetToken');
+    if (isWorkPro) {
+        _bot = WechatyBuilder.build({ name: 'WeChatPal', puppet: '@juzi/wechaty-puppet-service', puppetOptions: {token} });
+    } else {
+        const puppet = new PuppetPadlocal({token});
+        _bot = WechatyBuilder.build({ name: 'WeChatPal', puppet });
+    }
     _bot
         .on('scan', (qrcode, status) => {
             utils.logInfo(`Scan QR Code to login: ${status}`);
@@ -46,9 +51,7 @@ async function handleMessage(message) {
     const from = message.talker();
     const text = message.text();
 
-    if (!message.self()) {
-        utils.logDebug(`Message received: ${message}`);
-    }
+    utils.logDebug(`Message received: ${message}`);
 
     // Check if message is from the target group
     if (from && room && (await room.topic()) === targetGroupTopic) {

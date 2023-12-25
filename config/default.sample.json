@@ -1,6 +1,7 @@
 {
   "wechaty": {
-    "puppetToken": "YOUR_PADLOCAL_TOKEN"
+    "puppetToken": "YOUR_PUPPET_TOKEN",
+    "puppetType": "padlocal or workpro"
   },
   "openAI": {
     "apiKey": "YOUR_OPENAI_API_KEY",
