@@ -7,7 +7,8 @@
     "apiKey": "YOUR_OPENAI_API_KEY",
     "inputPrice": "0.01",
     "outputPrice": "0.03",
-    "maxTokens": 4096
+    "maxCompletionTokens": 2000,
+    "maxPromptTokens": 5000
   },
   "assistant": {
     "idleTimeSeconds": 600,

@@ -1,16 +1,18 @@
 const OpenAI = require('openai');
+const tiktoken = require("@dqbd/tiktoken");
 const config = require('config');
 const utils = require('./utils');
 const messageStorage = require('./messageStorage');
 
-const openai = new OpenAI({ apiKey: config.get('openAI.apiKey') });
+let _openai = null;
+let _encoder = null;
 
 async function sendToOpenAI() {
     const messages = messageStorage.getRecentMessages();
-    const response = await openai.chat.completions.create({
+    const response = await _openai.chat.completions.create({
         model: "gpt-4-vision-preview",
         messages: composeMessages(messages),
-        max_tokens: config.get('openAI.maxTokens')
+        max_tokens: config.get('openAI.maxCompletionTokens')
     });
 
     const usage = response.usage;
@@ -34,7 +36,11 @@ function composeMessages(messages) {
         role: 'system',
         content: config.get('assistant.systemPrompt')
     }];
-    for (let i = 0; i < messages.length; i++) {
+
+    let promptTokens = countTokens(result[0]);
+    const maxPromptTokens = config.get('openAI.maxPromptTokens');
+
+    for (let i = messages.length-1; i >= 0; i--) {
         const message = messages[i];
         const aiMsg = {role: (message.bot ? 'assistant' : 'user')};
         const timeStr = new Date(message.time).toLocaleString('zh-CN', {
@@ -49,9 +55,9 @@ function composeMessages(messages) {
 
         if (message.text) {
             if (message.bot) {
-                aiMsg.content = message.text;
+                aiMsg.content = [{type: 'text', text: message.text}];
             } else {
-                aiMsg.content = prefix + message.text;
+                aiMsg.content = [{type: 'text', text: prefix + message.text}];
             }
         } else if (message.image) {
             aiMsg.content = [
@@ -59,9 +65,39 @@ function composeMessages(messages) {
                 { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${message.image}` } }
             ];
         }
-        result.push(aiMsg);
+
+        let tokens = countTokens(aiMsg);
+        if (tokens + promptTokens > maxPromptTokens) {
+            utils.logDebug(`Prompt token limit reached: ${promptTokens} + ${tokens} > ${maxPromptTokens}, stop at message ${timeStr}`);
+            break;
+        }
+        promptTokens += tokens;
+        // insert at index 1, just after the system prompt
+        result.splice(1, 0, aiMsg);
     }
     return result;
 }
 
-module.exports = { sendToOpenAI };
+function countTokens(message) {
+    if (typeof (message.content) === 'string') {
+        return _encoder.encode(message.content).length;
+    }
+    let count = 0;
+    for (let i= 0; i < message.content.length; i++) {
+        const content = message.content[i];
+        if (content.type === 'text') {
+            count += _encoder.encode(content.text).length;
+        } else if (content.type === 'image_url') {
+            // assuming images are no larger than 512x512, need to adjust if otherwise
+            count += 255;
+        }
+    }
+    return count;
+}
+
+function init() {
+    _openai = new OpenAI({ apiKey: config.get('openAI.apiKey') });
+    _encoder = tiktoken.get_encoding("cl100k_base");
+}
+
+module.exports = { sendToOpenAI, init };

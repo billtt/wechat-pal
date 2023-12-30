@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@dqbd/tiktoken": "^1.0.7",
     "@juzi/wechaty": "^1.0.85",
     "@juzi/wechaty-puppet-service": "^1.0.88",
     "config": "^3.3.9",
