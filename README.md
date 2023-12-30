@@ -19,9 +19,10 @@ cp config/default.sample.json config/default.json
 - `wechaty.puppetToken` Wechaty的PuppetToken，根据需要填写WorkPro或者PadLocal的Token
 - `wechaty.puppetType` 填写`padlocal`或`workpro`
 - `openAI.APIKey` OpenAI Key
-- `openAI.maxTokens` 单次OpenAI请求的token限制。注意：目前不会对请求prompt进行处理，如果token数超了可能会影响返回内容的效果
+- `openAI.maxCompletionTokens` 单次OpenAI请求生成的token数限制
+- `openAI.maxPromptTokens` 单次OpenAI请求发送的token数限制，此限制数会与`assistant.messageBatchPeriodDays`一起影响发送给AI的消息数量。需要注意的是，因为实现的原因，token数量的限制并不是精确的。
 - `assistant.idleTimeSeconds` AI助手的等待时间（秒），即多久没有收到消息后会触发AI助手的回复。此设定是为了减少OpenAI的调用频率，尤其当群里消息比较密集时。但如果有人@AI助手，它会立即回复。
-- `assistant.messageBatchPeriodDays` 每次向OpenAI发送的消息数量（天），即每次会发送这么多天内的消息给AI。此数值越大，AI能获取的信息量也越大，但也会增加成本，以及超token限制的风险。
+- `assistant.messageBatchPeriodDays` 每次向OpenAI发送的消息数量（天），即每次会发送这么多天内的消息给AI。此数值越大，AI能获取的信息量也越大，但也会增加成本。另外，当消息对应的token数量超过`openAI.maxPromptTokens`时，会自动去掉最早的消息。
 - `assistant.systemPrompt` AI助手的System Prompt，此prompt每次都会发送给AI，可以在此对AI的身份和功能进行设定。
 - `assistant.groupTopic` 群名。只有该群的消息才会被发送给AI。
 - `assistant.imageDimension` 发送给AI的图片尺寸。群内的图片会被缩小到此尺寸（最长边）后发送给AI。
