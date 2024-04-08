@@ -49,7 +49,8 @@ function composeMessages(messages) {
             year: 'numeric', // numeric, 2-digit
             month: 'short', // numeric, 2-digit, long, short, narrow
             hour: 'numeric', // numeric, 2-digit
-            minute: 'numeric'
+            minute: 'numeric',
+            timeZone: 'Asia/Shanghai'
         });
         const prefix = `${timeStr} ${message.sender}: `;
 
