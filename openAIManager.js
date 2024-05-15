@@ -10,7 +10,7 @@ let _encoder = null;
 async function sendToOpenAI() {
     const messages = messageStorage.getRecentMessages();
     const response = await _openai.chat.completions.create({
-        model: "gpt-4-vision-preview",
+        model: config.get('openAI.model'),
         messages: composeMessages(messages),
         max_tokens: config.get('openAI.maxCompletionTokens')
     });

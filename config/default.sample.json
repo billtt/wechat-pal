@@ -5,10 +5,11 @@
   },
   "openAI": {
     "apiKey": "YOUR_OPENAI_API_KEY",
-    "inputPrice": "0.01",
-    "outputPrice": "0.03",
+    "inputPrice": "0.005",
+    "outputPrice": "0.015",
     "maxCompletionTokens": 2000,
-    "maxPromptTokens": 5000
+    "maxPromptTokens": 5000,
+    "model": "gpt-4o"
   },
   "assistant": {
     "idleTimeSeconds": 600,
